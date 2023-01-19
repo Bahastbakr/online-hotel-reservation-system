@@ -19,8 +19,9 @@ return new class extends Migration
             $table->dateTime('form_time');
             $table->dateTime('to_time');
             $table->double('total');
-            $table->string('status');
+            $table->string('status'); //pending //booked // canceled
             $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('room_id')->references('id')->on('rooms');
         });
     }
 

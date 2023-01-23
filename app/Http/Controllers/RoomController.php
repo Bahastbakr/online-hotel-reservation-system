@@ -21,6 +21,17 @@ class RoomController extends Controller
         return view('rooms.index', ['rooms' => $rooms]);
     }
 
+    public function indexGuest(Request $request)
+    {
+
+        if ($request) {
+            $rooms = Room::where("max_adults", ">=", $request->adults)->where("max_children", ">=", $request->children)->get();
+        } else {
+            $rooms = Room::all();
+        }
+        return view('rooms', ['rooms' => $rooms]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -57,8 +68,8 @@ class RoomController extends Controller
         $room->max_children = $request->children;
         $room->max_adults = $request->adults;
         $room->quantity = $request->quantity;
-        $room->facilities = json_encode($request->facilities);
-        $room->features = json_encode($request->features);
+        $room->facilities = $request->facilities;
+        $room->features = $request->features;
         $room->price = $request->price;
         $room->status = "Pending";
 

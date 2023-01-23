@@ -45,3 +45,8 @@ Route::middleware([
             Route::put('/booking/{id}/update', 'update')->name('booking.update');
         });
 });
+
+Route::controller(App\Http\Controllers\RoomController::class)
+    ->group(function () {
+        Route::get('/rooms', 'indexGuest')->name('room.guest.index');
+    });

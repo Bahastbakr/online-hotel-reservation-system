@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Booking;
+use App\Models\Room;
+
 class BookingController extends Controller
 {
     /**
@@ -45,6 +48,14 @@ class BookingController extends Controller
      */
     public function show($id)
     {
+        //
+    }
+
+
+    public function view($roomId)
+    {
+        $room = Room::find($roomId);
+        return view('book', ['room' => $room, 'request' => request()]);
         //
     }
 

@@ -24,12 +24,12 @@ class RoomController extends Controller
     public function indexGuest(Request $request)
     {
 
-        if ($request) {
+        if ($request->filled('adults')) {
             $rooms = Room::where("max_adults", ">=", $request->adults)->where("max_children", ">=", $request->children)->get();
         } else {
             $rooms = Room::all();
         }
-        return view('rooms', ['rooms' => $rooms]);
+        return view('rooms', ['rooms' => $rooms, 'request' => $request]);
     }
 
     /**

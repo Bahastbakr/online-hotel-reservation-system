@@ -40,7 +40,6 @@ Route::middleware([
         ->group(function () {
             Route::get('/booking', 'index')->name('booking.index');
             Route::get('/booking/create', 'create')->name('booking.create');
-            Route::post('/booking/store', 'store')->name('booking.store');
             Route::get('/booking/{id}/edit', 'edit')->name('booking.edit');
             Route::put('/booking/{id}/update', 'update')->name('booking.update');
         });
@@ -49,4 +48,12 @@ Route::middleware([
 Route::controller(App\Http\Controllers\RoomController::class)
     ->group(function () {
         Route::get('/rooms', 'indexGuest')->name('room.guest.index');
+    });
+
+
+Route::controller(App\Http\Controllers\BookingController::class)
+    ->group(function () {
+
+        Route::get('/booking/view/{roomId}', 'view')->name('booking.view.payment');
+        Route::post('/booking/store/{roomId}', 'store')->name('booking.store');
     });

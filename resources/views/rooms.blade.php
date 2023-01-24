@@ -5,34 +5,43 @@
 
         <h1 class="text-center mb-20 text-5xl font-medium"> Rooms</h1>
 
+        <div class="p-4 mb-4 text-sm text-yellow-700 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300"
+            role="alert">
+            <span class="font-medium">Warning alert!</span> You can't book any rooms until you fill the form!
+        </div>
         <div class="grid grid-cols-3">
+
 
             <div
                 class="p-6 bg-white border max-w-sm  h-fit   border-gray-200  rounded-lg shadow-xl dark:bg-gray-800 dark:border-gray-700">
-                <a href="#">
+                <div href="#">
                     <h5 class="mb-10 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Check Room
                         availability
                     </h5>
-                </a>
+                </div>
 
                 <form class="grid" method="GET" action="{{ route('room.guest.index') }}">
 
                     <div class="mb-6">
                         <label for="checkin" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Check-In</label>
-                        <input name="checkin" min="{{ now()->addDays(1)->format('Y-m-d') }}" type="date"
-                            id="checkin"
+
+                        <input
+                            @if ($request->checkin) value="{{ Carbon\Carbon::parse($request->checkin)->format('Y-m-d') }}" @endif
+                            name="checkin" min="{{ now()->addDays(1)->format('Y-m-d') }}" type="date" id="checkin"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="name@flowbite.com" required>
+                            required>
                     </div>
 
                     <div class="mb-6">
                         <label for="checkout" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Check-Out</label>
-                        <input name="checkout" min="{{ now()->addDays(1)->format('Y-m-d') }}" type="date"
+                        <input
+                            @if ($request->checkout) value="{{ Carbon\Carbon::parse($request->checkout)->format('Y-m-d') }}" @endif
+                            value="" name="checkout" min="{{ now()->addDays(1)->format('Y-m-d') }}" type="date"
                             id="checkout"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="name@flowbite.com" required>
+                            required>
                     </div>
 
                     <div class="mb-6">
@@ -40,11 +49,12 @@
 
                         <label for="adults"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Adults</label>
-                        <select name="adults" id="adults"
+                        <select required name="adults" id="adults"
                             class="bg-gray-50 border wi- border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected>Choose adults number</option>
+                            <option value="" selected>Choose adults number</option>
                             @for ($i = 1; $i <= 10; $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                                <option @if ($request->filled('checkin') && $request->adults == $i) selected @endif value="{{ $i }}">
+                                    {{ $i }}</option>
                             @endfor
                         </select>
 
@@ -54,11 +64,12 @@
 
                         <label for="children"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Children</label>
-                        <select name="children" id="children"
+                        <select required name="children" id="children"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option selected>Choose child number</option>
+                            <option value="" selected>Choose child number</option>
                             @for ($i = 1; $i <= 10; $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                                <option @if ($request->filled('children') && $request->children == $i) selected @endif value="{{ $i }}">
+                                    {{ $i }}</option>
                             @endfor
                         </select>
 
@@ -66,7 +77,6 @@
 
                     <div class="flex">
 
-                        <h4>${{ $room->price }}/Per night</h4>
                         <button type="submit"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
 
@@ -77,9 +87,55 @@
             </div>
 
             <div class="col-span-2">
+
+
                 <div class="grid gap-8 mb-6 lg:mb-16 md:grid-cols-1">
                     @forelse ($rooms as $room)
-                        <div class="rounded-lg shadow grid grid-cols-3 dark:bg-gray-800 dark:border-gray-700">
+                        <form method="GET" action="{{ route('booking.view.payment', $room->id) }}"
+                            class="rounded-lg shadow grid grid-cols-3 dark:bg-gray-800 dark:border-gray-700">
+
+
+                            <div class="hidden">
+                                <input
+                                    @if ($request->checkin) value="{{ Carbon\Carbon::parse($request->checkin)->format('Y-m-d') }}" @endif
+                                    name="checkin" min="{{ now()->addDays(1)->format('Y-m-d') }}" type="date"
+                                    id="checkin"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required>
+
+                                <input
+                                    @if ($request->checkout) value="{{ Carbon\Carbon::parse($request->checkout)->format('Y-m-d') }}" @endif
+                                    value="" name="checkout" min="{{ now()->addDays(1)->format('Y-m-d') }}"
+                                    type="date" id="checkout"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required>
+
+
+                                <select name="adults" id="adults"
+                                    class="bg-gray-50 border wi- border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected>Choose adults number</option>
+                                    @for ($i = 1; $i <= 10; $i++)
+                                        <option @if ($request->filled('checkin') && $request->adults == $i) selected @endif
+                                            value="{{ $i }}">
+                                            {{ $i }}</option>
+                                    @endfor
+                                </select>
+
+                                <select name="children" id="children"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected>Choose child number</option>
+                                    @for ($i = 1; $i <= 10; $i++)
+                                        <option @if ($request->filled('children') && $request->children == $i) selected @endif
+                                            value="{{ $i }}">
+                                            {{ $i }}</option>
+                                    @endfor
+                                </select>
+
+
+                            </div>
+
+
+
                             <a href="#">
                                 <img class="object-cover  rounded-lg sm:rounded-none sm:rounded-l-lg"
                                     src="/storage/rooms/{{ $room->image }}" alt="Bonnie Avatar">
@@ -128,13 +184,21 @@
 
                                 </div>
 
-                                <button type="button"
-                                    class="focus:outline-none self-end justify-self-end text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Book
-                                    Now</button>
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-2xl">${{ $room->price }}/Per night</h4>
 
+                                    @auth
+
+                                        @if ($request->adults)
+                                            <button type="submit" href="{{ route('booking.view.payment', $room->id) }}"
+                                                class="focus:outline-none self-end justify-self-end text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Book
+                                                Now</button>
+                                        @endif
+                                    @endauth
+                                </div>
 
                             </div>
-                        </div>
+                        </form>
                     @empty
                         <h4 class="text-3xl text-center">No Rooms to Show!</h4>
                     @endforelse

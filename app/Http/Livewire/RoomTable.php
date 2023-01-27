@@ -26,6 +26,8 @@ class RoomTable extends DataTableComponent
                 ->sortable(),
             Column::make("Children", "max_children")
                 ->sortable(),
+            Column::make("Quantity", "quantity")
+                ->sortable(),
             Column::make("Created at", "created_at")
                 ->sortable(),
             Column::make("Updated at", "updated_at")

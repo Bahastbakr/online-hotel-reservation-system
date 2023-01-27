@@ -24,7 +24,15 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         $users = App\Models\User::all();
-        $bookings = App\Models\Booking::all();
+
+        if (auth()->user()->hasAnyRole(['Admin'])) {
+
+            $bookings = App\Models\Booking::all();
+        } else {
+            $bookings = App\Models\Booking::where('user_id', auth()->user()->id)->get();
+        }
+
+
         $rooms = App\Models\Room::all();
 
 

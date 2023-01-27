@@ -25,9 +25,9 @@ class RoomController extends Controller
     {
 
         if ($request->filled('adults')) {
-            $rooms = Room::where("max_adults", ">=", $request->adults)->where("max_children", ">=", $request->children)->get();
+            $rooms = Room::where("max_adults", ">=", $request->adults)->where("max_children", ">=", $request->children)->where("quantity", '>', 0)->get();
         } else {
-            $rooms = Room::all();
+            $rooms = Room::where("quantity", '>', 0)->get();
         }
         return view('rooms', ['rooms' => $rooms, 'request' => $request]);
     }

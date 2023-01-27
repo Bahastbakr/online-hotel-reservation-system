@@ -34,6 +34,11 @@ class BookingController extends Controller
     {
         $booking = Booking::find($id);
         $booking->status = $status;
+        if ($booking->status == "Canceled") {
+            $room = Room::find($booking->room_id);
+            $room->quantity = $room->quantity + 1;
+            $room->save();
+        }
         $booking->save();
 
         return redirect(route('booking.index'))->with('message', 'Booking status updated successfully');
@@ -63,8 +68,13 @@ class BookingController extends Controller
         $booking->to_time = $request->to_time;
         $booking->total = $request->total;
         $booking->status = "Pending";
+        $booking->is_paid = "No paid";
         $booking->user_id = auth()->user()->id;
         $booking->room_id = $request->room_id;
+
+        $room = Room::find($request->room_id);
+        $room->quantity = $room->quantity - 1;
+        $room->save();
 
         $booking->save();
 

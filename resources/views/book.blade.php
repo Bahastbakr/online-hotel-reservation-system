@@ -3,8 +3,16 @@
 
     <div class="items-center mt-10 min-h-screen flex justify-center">
 
-        <div
+        <form action="{{ route('booking.store') }}" method="post"
             class="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+
+            @csrf
+
+            <input type="hidden" name="from_time" value="{{ $request->checkin }}">
+            <input type="hidden" name="to_time" value="{{ $request->checkout }}">
+            <input type="hidden" name="total" value="{{ $room->price }}">
+            <input type="hidden" name="room_id" value="{{ $room->id }}">
+
             <h5 class="mb-4 text-xl font-medium text-gray-500 dark:text-gray-400">{{ $room->name }}</h5>
             <div class="flex items-baseline text-gray-900 dark:text-white">
                 <span class="text-3xl font-semibold">$</span>
@@ -63,11 +71,15 @@
             </div>
 
             <hr class="mb-10">
-            <button type="button"
-                class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Choose
-                plan</button>
-        </div>
+            <button type="submit"
+                class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-200 dark:focus:ring-blue-900 font-medium rounded-lg text-sm px-5 py-2.5 inline-flex justify-center w-full text-center">Book</button>
+        </form>
 
+        @if ($errors->any())
+            @foreach ($errors as $error)
+                {{ $error->message }}
+            @endforeach
+        @endif
 
     </div>
 

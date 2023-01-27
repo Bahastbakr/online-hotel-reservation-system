@@ -16,7 +16,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        //
+        return view('bookings.index');
     }
 
     /**
@@ -29,6 +29,18 @@ class BookingController extends Controller
         //
     }
 
+
+    public function updateStatus($id, $status)
+    {
+        $booking = Booking::find($id);
+        $booking->status = $status;
+        $booking->save();
+
+        return redirect(route('booking.index'))->with('message', 'Booking status updated successfully');
+    }
+
+
+
     /**
      * Store a newly created resource in storage.
      *
@@ -37,7 +49,26 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $this->validate($request, [
+            'from_time' => 'required',
+            'to_time' => 'required',
+            'total' => 'required',
+            'room_id' => 'required',
+
+        ]);
+
+        $booking = new Booking();
+        $booking->form_time = $request->from_time;
+        $booking->to_time = $request->to_time;
+        $booking->total = $request->total;
+        $booking->status = "Pending";
+        $booking->user_id = auth()->user()->id;
+        $booking->room_id = $request->room_id;
+
+        $booking->save();
+
+        return redirect(route('room.guest.index'))->with('message', 'Your room has been booked successfully!');
     }
 
     /**

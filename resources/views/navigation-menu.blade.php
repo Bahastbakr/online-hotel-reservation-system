@@ -17,16 +17,18 @@
                     </x-jet-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('booking.index') }}" :active="request()->routeIs('booking')">
+                    <x-jet-nav-link href="{{ route('booking.index') }}" :active="request()->routeIs('booking.index')">
                         {{ __('Bookings') }}
                     </x-jet-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('room.index') }}" :active="request()->routeIs('room.index')">
-                        {{ __('Rooms') }}
-                    </x-jet-nav-link>
-                </div>
+                @role('Admin')
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route('room.index') }}" :active="request()->routeIs('room.index')">
+                            {{ __('Rooms') }}
+                        </x-jet-nav-link>
+                    </div>
+                @endrole
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">

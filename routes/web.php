@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Spatie\Permission\Traits\HasRoles;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,11 +23,16 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $users = App\Models\User::all();
+        $bookings = App\Models\Booking::all();
+        $rooms = App\Models\Room::all();
+
+
+        return view('dashboard', ['users' => $users, 'bookings' => $bookings, 'rooms' => $rooms]);
     })->name('dashboard');
 
 
-    Route::controller(App\Http\Controllers\RoomController::class)
+    Route::controller(App\Http\Controllers\RoomController::class)->middleware('role:Admin')
         ->group(function () {
             Route::get('/room', 'index')->name('room.index');
             Route::get('/room/create', 'create')->name('room.create');
@@ -42,18 +47,16 @@ Route::middleware([
             Route::get('/booking/create', 'create')->name('booking.create');
             Route::get('/booking/{id}/edit', 'edit')->name('booking.edit');
             Route::put('/booking/{id}/update', 'update')->name('booking.update');
+
+            Route::put('/booking/{id}/{status}/update', 'updateStatus')->name('booking.status.change');
+
+
+            Route::get('/booking/view/{roomId}', 'view')->name('booking.view.payment');
+            Route::post('/booking/store/', 'store')->name('booking.store');
         });
 });
 
 Route::controller(App\Http\Controllers\RoomController::class)
     ->group(function () {
         Route::get('/rooms', 'indexGuest')->name('room.guest.index');
-    });
-
-
-Route::controller(App\Http\Controllers\BookingController::class)
-    ->group(function () {
-
-        Route::get('/booking/view/{roomId}', 'view')->name('booking.view.payment');
-        Route::post('/booking/store/{roomId}', 'store')->name('booking.store');
     });

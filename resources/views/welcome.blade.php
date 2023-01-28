@@ -1,7 +1,4 @@
 <x-guest-layout>
-
-
-
     <div
         class="p-6 bg-white border absolute z-40 top-52 translate-x-3 md:translate-x-20 lg:translate-x-80  border-gray-200  rounded-lg shadow-2xl dark:bg-gray-800 dark:border-gray-700">
         <a href="#">
